@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+  <title>Django на METANIT.COM</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+
+  {% with value=34_232.34 %}
+    {{ value|floatformat:"2u" }}
+  {% endwith %}
+
+  <ul>
+    {{ langs|unordered_list }}
+  </ul>
+
+  <img src="{% static 'img/1.jpg' %}" alt="зимний лес">
+
+  <p>{{ my_date|date:"DATE_FORMAT" }}</p>
+  <p>{{ my_date|date:"SHORT_DATE_FORMAT" }}</p>
+  <p>{{ my_date|date:"DATETIME_FORMAT" }}</p>
+  <p>{{ my_date|date:"SHORT_DATETIME_FORMAT" }}</p>
+
+  <h2>{{ header }}</h2>
+  <p>{{ message }}</p>
+  <p>{{ langs.0 }} {{ langs.1 }}</p>
+
+  <p>{{ isEnabled|default_if_none:"unabled" }}</p>
+
+  <p>{% now "Y" %}</p>
+  <p>{% now "F j Y" %}</p>
+  <p>{% now "N, j, Y" %}</p>
+  <p>{% now "N j, Y, H:i" %}</p>
+
+  {% if n > 0 %}
+    {{ htmlIf }}
+  {% elif n < 0 %} 
+    {% autoescape off %}
+      {{ htmlElIf }}
+    {% endautoescape %}
+  {% elif n == 0 %} 
+    {% autoescape off %}
+      {{ htmlElIf }}
+    {% endautoescape %}
+  {% else %}
+    <p>Передайте параметр n для демонстрации ветвления</p>
+  {% endif %}
+
+  <ul>
+    {% for lang in langs %}
+    <li>{{ lang }}</li>
+    {% empty %}
+    <li>Langs array is empty</li>
+    {% endfor %}
+  </ul>
+
+  {% for key, value in user.items %}
+  <p>{{ key }}: {{ value }}</p>
+  {% endfor %}
+
+  {% comment %}
+  <p>Вывод содержимого в шаблон Django</p>
+  {% endcomment %}
+
+  {% with name="Tom" age=29 %}
+  <div>
+    <p>Name: {{ name }}</p>
+    <p>Age: {{ age }}</p>
+  </div>
+  {% endwith %}
+
+
+</body>
+
+</html>

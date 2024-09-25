@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.template.response import TemplateResponse
 from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotFound, JsonResponse
 import datetime
 
@@ -13,7 +14,29 @@ links = '''
     <a href="/2">2</a>
     </nav>
 '''
+
+mySite = {
+    '/html': {
+        "header": "Hello Django", "message": "Welcome to Python", "langs": ["Python", "JavaScript", "Java", "C#", "C++"],
+        "htmlIf":"<p>Число положительное</p>", "htmlElIf":"<p>Число отрицательное</p>", "htmlElse":"<p>Число равно нулю</p>", 
+        "user": {
+            "name":'test',
+            "age": -32
+        },
+        "name":"Tom1", 'age':39, "isEnabled":None, "my_date":datetime.datetime(2023,5,23,14,12,16)
+    }
+}
  
+def index1(request):
+    n = request.GET.get("n")
+    if n:
+        n = int(n)
+    data = {"header": "Hello Django", "message": "Welcome to Python"}
+    return render(request, "index.html", context={**mySite[request.path], "n":n})
+
+def contacts(request):
+       return render(request, "contacts.html")
+
 def index(request):
     admin = request.GET.get("admin")
     if (admin):

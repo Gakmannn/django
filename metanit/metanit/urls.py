@@ -25,7 +25,9 @@ product_patterns = [
 
 urlpatterns = [
     path('', views.index, name='home'),
+    path('html', views.index1),
     path('json', views.json),
+    path('contacts', views.contacts),
     re_path(r'^1/.+/?$', views.i2, name='home2'),
     # path('1/<str:name>', views.i2, name='home2'),
     re_path(r'^2/(?P<slug>\d+)?/?$', views.i22,),
