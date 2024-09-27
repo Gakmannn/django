@@ -23,7 +23,7 @@ mySite = {
             "name":'test',
             "age": -32
         },
-        "name":"Tom1", 'age':39, "isEnabled":None, "my_date":datetime.datetime(2023,5,23,14,12,16)
+        "name":"Tom1", 'age':39, "isEnabled":None, "my_date":datetime.datetime(datetime.datetime.now().year,1,1) + datetime.timedelta(days=256)
     }
 }
  
