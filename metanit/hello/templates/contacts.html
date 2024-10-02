@@ -6,5 +6,33 @@
 <p>Телефон: +12345677890</p>
 {% include "banner.html" %}
 <p>Email: admin@admin.com</p>
+<h2>User form</h2>
+{% comment %} <form method="post" action="postuser">
+    {% csrf_token %}
+    <p>Name:<br> <input name="name" /></p>
+    <p>Age:<br> <input name="age" type="number" /></p>
+    <p>
+      Languages:<br />
+      <input name="languages" /><br />
+      <input name="languages" /><br />
+      <input name="languages" /><br />
+      <select multiple name="languages">
+        <option>Python</option>
+        <option>JavaScript</option>
+        <option>C++</option>
+        <option>Java</option>
+      </select>
+    </p>
+    <input type="submit" value="Send" />
+</form> {% endcomment %}
+<form method="POST" action="postuser">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+    {{ form.name.label }}
+    {{ form.name }}
+  <input type="submit" value="Send" >
+</form>
 {% endblock content %}
 

@@ -35,4 +35,5 @@ urlpatterns = [
     path("product", views.products),
     path("product/", include(product_patterns)),
     path('admin/', admin.site.urls),
+    path("postuser", views.postuser),
 ]

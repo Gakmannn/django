@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotFound, JsonResponse
+from .forms import UserForm
 import datetime
 
 # Create your views here.
@@ -35,7 +36,8 @@ def index1(request):
     return render(request, "index.html", context={**mySite[request.path], "n":n})
 
 def contacts(request):
-       return render(request, "contacts.html")
+    userform = UserForm()
+    return render(request, "contacts.html", {"form": userform})
 
 def index(request):
     admin = request.GET.get("admin")
@@ -77,3 +79,21 @@ def new(request):
  
 def top(request):
     return HttpResponse(links+"Наиболее популярные товары")
+
+# POST
+
+def postuser(request):
+    # получаем из данных запроса POST отправленные через форму данные
+    userform = UserForm(request.POST)
+    if userform.is_valid():
+        name = userform.cleaned_data["name"]
+        age = request.POST.get("age", 1)
+        combo = request.POST.get("combo", '')
+        langs = request.POST.getlist("languages", ["python"])
+        return HttpResponse(f"""
+                    <div>Name: {name}  Age: {age}<div>
+                    <div>Languages: {langs}</div>
+                    <div>Combo: {combo}</div>
+                """)
+    else:
+        return HttpResponse("Invalid data")
