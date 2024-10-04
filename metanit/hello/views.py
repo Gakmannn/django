@@ -3,6 +3,38 @@ from django.template.response import TemplateResponse
 from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseNotFound, JsonResponse
 from .forms import UserForm
 import datetime
+from .models import Person
+import asyncio
+  
+# https://yourtodo.ru/posts/asinhronnyij-django  
+  
+async def get_person(id):
+    person = await Person.objects.aget(id=id)
+    print(person.name)
+    return person
+
+# запускаем асинхронную функцию get_person
+p = asyncio.run(get_person(3))
+print(f"{p.id}.{p.name} - {p.age}")
+
+# tom = Person.objects.create(name="Tom", age=23)
+# tom = Person.objects.create(name="Tom", age=32)
+# получаем все объекты
+# people = Person.objects.bulk_create([
+#     Person(name="Kate", age=24),
+#     Person(name="Ann", age=21),
+# ])
+
+# Person.objects.get(id=2).delete()
+
+# people = Person.objects.all().filter(name = "Tom").filter(age = 32)
+people = Person.objects.all()
+print(people.query)
+
+ 
+# здесь происходит выполнения запроса в БД
+for person in people:
+    print(f"{person.id}.{person.name} - {person.age}")
 
 # Create your views here.
 
