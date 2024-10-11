@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpRespons
 from .forms import UserForm
 import datetime
 from django.db.models.query import RawQuerySet
-from .models import Person
+from .models import Person, Product, Company, Course,Student,Enrollment
 from django.db.models import Avg, Min, Max, Sum
 import asyncio
   
@@ -106,6 +106,73 @@ print(sum)
 
 raw = RawQuerySet("SELECT id, name FROM hello_person")
 
+
+# создаем объект Company
+# apple = Company.objects.create(name="Apple")
+ 
+ 
+# # создание товара определенной компании
+# apple.product_set.create(name="iPhone 8", price=67890)
+ 
+# # отдельное создание объекта с последующим добавлением
+# ipad = Product(name="iPad", price=34560)
+# при добавлении необходимо указать параметр bulk =False
+# apple.product_set.add(ipad, bulk =False)
+
+
+# apple = Company.objects.get(id=1)
+
+# print(apple.product_set.all())
+
+# c = Company.objects.all()
+# for el in c:
+#     el.delete()
+
+# создадим курс
+python = Course.objects.get(id=2)
+
+# # создадим двух студентов
+tom = Student.objects.get(id=3)
+sam = Student.objects.get(id=4)
+
+# создаем поступления студентов на курс
+# tom_python = Enrollment(student = tom, course= python,
+#                 date=datetime.datetime.now(), mark = 5)
+# sam_python = Enrollment(student = sam, course= python,
+#                 date=datetime.datetime.now(), mark = 4)
+# сохраняем поступления в бд
+# tom_python.save()
+# sam_python.save()
+
+# получаем все курсы у Toma
+tom_courses = tom.courses.all()
+print(tom_courses[0].name)      # python
+    
+# получим всех студентов курса по python
+python_students = python.students.all()
+print(python_students[0].name)      # Tom
+print(python_students)      # Tom
+
+python_enrollment = python.enrollment_set.all()
+print(python_enrollment)      # Tom
+
+student_enrollment = tom.enrollment_set.all()
+print(student_enrollment)      # Tom
+
+student_enrollment = python_students[0].enrollment_set.all()
+print(student_enrollment)      # Tom
+
+# bob.courses.add(django, through_defaults={"date": date.today(), "mark": 5})
+# # создаем курс для студента bob
+# bob.courses.create(name="C++", through_defaults={"date": date.today(), "mark": 4})
+     
+# # получаем все курсы Boba
+# print(bob.courses.all().values_list()) # <QuerySet [(11, 'Django'), (14, 'C++')]>
+ 
+# # переустанавливаем курсы для студента bob
+# bob.courses.set([python, java], through_defaults={"date": date.today(), "mark": 4})
+
+
 arr = [1,2,3]
  
 links = '''
@@ -127,6 +194,58 @@ mySite = {
         "name":"Tom1", 'age':39, "isEnabled":None, "my_date":datetime.datetime(datetime.datetime.now().year,1,1) + datetime.timedelta(days=256)
     }
 } 
+
+def index_companies(request):
+    products = Product.objects.all()
+    return render(request, "comp.html", {"products": products})
+ 
+# добавление данных из бд
+def create_companies(request):
+    # добавление начальных данных в таблицу компаний
+    if Company.objects.all().count() == 0:
+        Company.objects.create(name = "Apple")
+        Company.objects.create(name = "Asus")
+        Company.objects.create(name = "MSI")
+
+ 
+    # если запрос POST, сохраняем данные
+    if request.method == "POST":
+        product = Product()
+        product.name = request.POST.get("name")
+        product.price = request.POST.get("price")
+        product.company_id = request.POST.get("company")
+        product.save()
+        return HttpResponseRedirect("/comp/")
+    # передаем данные в шаблон
+    companies = Company.objects.all()
+    return render(request, "create_comp.html", {"companies": companies})
+ 
+# изменение данных в бд
+def edit_companies(request, id):
+    try:
+        product = Product.objects.get(id=id)
+ 
+        if request.method == "POST":
+            product.name = request.POST.get("name")
+            product.price = request.POST.get("price")
+            product.company_id = request.POST.get("company")
+            product.save()
+            return HttpResponseRedirect("/comp/")
+        else:
+            companies = Company.objects.all()
+            return render(request, "edit_comp.html", {"product": product, "companies": companies})
+    except Product.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+     
+# удаление данных из бд
+def delete_companies(request, id):
+    try:
+        product = Product.objects.get(id=id)
+        product.delete()
+        return HttpResponseRedirect("/comp")
+    except Product.DoesNotExist:
+        return HttpResponseNotFound("<h2>Product not found</h2>")
+ 
 
 def person(request):
     people = Person.objects.all()
